@@ -48,6 +48,7 @@ export class ChatVm {
         Elements.systemMessage.value = this.model.systemPrompt;
         Elements.gptModel.value = this.model.gptModel;
         Elements.chatName.value = this.model.name || 'New Chat';
+        Elements.chatTitle.innerHTML = this.model.name;
         this.clearHistoryUi();
         this.model.messages.forEach(element => {
             this.addMessageToUi(element);

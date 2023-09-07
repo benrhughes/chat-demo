@@ -157,33 +157,32 @@ export class App {
         this.saveDb();
     }
     bindUi() {
-        var _a, _b, _c, _d, _e, _f, _g, _h, _j;
-        (_a = Elements.saveSettingsBtn) === null || _a === void 0 ? void 0 : _a.addEventListener("click", () => __awaiter(this, void 0, void 0, function* () {
+        Elements.saveSettingsBtn.addEventListener("click", () => __awaiter(this, void 0, void 0, function* () {
             this.saveSettings();
         }));
-        (_b = Elements.exportBtn) === null || _b === void 0 ? void 0 : _b.addEventListener("click", () => __awaiter(this, void 0, void 0, function* () {
+        Elements.exportBtn.addEventListener("click", () => __awaiter(this, void 0, void 0, function* () {
             this.export();
         }));
-        (_c = Elements.importBtn) === null || _c === void 0 ? void 0 : _c.addEventListener("click", () => __awaiter(this, void 0, void 0, function* () {
+        Elements.importBtn.addEventListener("click", () => __awaiter(this, void 0, void 0, function* () {
             this.import();
         }));
-        (_d = Elements.clearPersistanceBtn) === null || _d === void 0 ? void 0 : _d.addEventListener("click", () => __awaiter(this, void 0, void 0, function* () {
+        Elements.clearPersistanceBtn.addEventListener("click", () => __awaiter(this, void 0, void 0, function* () {
             this.clearDb();
         }));
-        (_e = Elements.deleteChatBtn) === null || _e === void 0 ? void 0 : _e.addEventListener("click", () => {
+        Elements.deleteChatBtn.addEventListener("click", () => {
             this.deleteChat();
         });
-        (_f = Elements.clearMessagesBtn) === null || _f === void 0 ? void 0 : _f.addEventListener("click", () => __awaiter(this, void 0, void 0, function* () {
-            var _k;
-            (_k = this.currentChat) === null || _k === void 0 ? void 0 : _k.clearMessages();
+        Elements.clearMessagesBtn.addEventListener("click", () => __awaiter(this, void 0, void 0, function* () {
+            var _a;
+            (_a = this.currentChat) === null || _a === void 0 ? void 0 : _a.clearMessages();
         }));
-        (_g = Elements.selectedChat) === null || _g === void 0 ? void 0 : _g.addEventListener("change", (e) => __awaiter(this, void 0, void 0, function* () {
+        Elements.selectedChat.addEventListener("change", (e) => __awaiter(this, void 0, void 0, function* () {
             this.chatSelected(e);
         }));
-        (_h = Elements.settingsToggleBtn) === null || _h === void 0 ? void 0 : _h.addEventListener("click", (e) => __awaiter(this, void 0, void 0, function* () {
+        Elements.settingsToggleBtn.addEventListener("click", (e) => __awaiter(this, void 0, void 0, function* () {
             return this.toggleSettings(e);
         }));
-        (_j = Elements.prompt) === null || _j === void 0 ? void 0 : _j.addEventListener("keydown", (event) => __awaiter(this, void 0, void 0, function* () {
+        Elements.prompt.addEventListener("keydown", (event) => __awaiter(this, void 0, void 0, function* () {
             this.promptEnter(event);
         }));
     }

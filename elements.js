@@ -47,10 +47,18 @@ export class Elements {
     static get sendMessageBtn() {
         return this.byId("fetchData");
     }
+    static get chatTitle() {
+        return this.byId("chatTitle");
+    }
     static inputById(id) {
         return document.getElementById(id);
     }
     static byId(id) {
-        return document.getElementById(id);
+        const el = document.getElementById(id);
+        if (!el) {
+            throw `Element not found: ${id}`;
+        }
+        ;
+        return el;
     }
 }
