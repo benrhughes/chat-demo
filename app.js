@@ -127,6 +127,7 @@ export class App {
         return false;
     }
     deleteChat() {
+        confirm("Delete the current chat?");
         this.db.models = this.db.models.filter(x => { var _a; return x.id !== ((_a = this.currentChat) === null || _a === void 0 ? void 0 : _a.model.id); });
         this.currentChat = new ChatVm(this.db.models[0]);
         this.saveDb();
