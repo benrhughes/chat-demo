@@ -43,6 +43,7 @@ export class App {
     }
     saveDb() {
         if (this.currentChat) {
+            this.currentChat.updateModelFromUi();
             this.currentChat.model.lastSaved = new Date();
         }
         //reverse-chron sort on last saved
