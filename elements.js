@@ -20,6 +20,9 @@ export class Elements {
     static get contextWindow() {
         return this.inputById('contextWindow');
     }
+    static get temperature() {
+        return this.inputById('temperature');
+    }
     static get clearPersistanceBtn() {
         return this.byId("clearPersistance");
     }

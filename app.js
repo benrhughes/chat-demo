@@ -9,6 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 import { ChatVm } from "./chatVm.js";
 import { Elements } from "./elements.js";
+import { GlobalsVm } from "./globalsVm.js";
 import { ChatModel, DB, DB as Database } from "./models.js";
 export class App {
     constructor() {
@@ -17,10 +18,9 @@ export class App {
         this.load();
     }
     load() {
-        var _a;
         this.loadDb();
-        Elements.apiKey.value = this.db.global.apiKey;
-        Elements.contextWindow.value = ((_a = this.db.global.contextWindow) === null || _a === void 0 ? void 0 : _a.toString()) || "10";
+        this.globals = new GlobalsVm(this.db.global);
+        this.globals.updateUiFromModel();
         for (const chat of this.db.models) {
             this.addChatOptionToUi(chat);
         }
@@ -143,19 +143,19 @@ export class App {
         }
     }
     sendMessage() {
-        var _a;
+        var _a, _b;
         return __awaiter(this, void 0, void 0, function* () {
-            if (!this.db.global.apiKey) {
+            if (!((_a = this.globals) === null || _a === void 0 ? void 0 : _a.model.apiKey)) {
                 alert('You need to enter an API Key');
                 return;
             }
-            yield ((_a = this.currentChat) === null || _a === void 0 ? void 0 : _a.sendMessage(this.db.global));
+            yield ((_b = this.currentChat) === null || _b === void 0 ? void 0 : _b.sendMessage(this.globals.model));
             this.saveDb();
         });
     }
     saveSettings() {
-        this.db.global.apiKey = Elements.apiKey.value;
-        this.db.global.contextWindow = +Elements.contextWindow.value;
+        var _a;
+        (_a = this.globals) === null || _a === void 0 ? void 0 : _a.updateModelFromUi();
         this.saveDb();
         alert("Settings saved");
     }
