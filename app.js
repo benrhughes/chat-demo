@@ -33,7 +33,8 @@ export class App {
             this.db.models.push(chat);
         }
         this.currentChat = new ChatVm(chat);
-        this.bindUi();
+        Elements.selectedChat.value = chat.id.toString();
+        this.bindUiEventHandlers();
     }
     loadDb() {
         const raw = localStorage.getItem(this.localStorageKey);
@@ -159,7 +160,7 @@ export class App {
         this.saveDb();
         alert("Settings saved");
     }
-    bindUi() {
+    bindUiEventHandlers() {
         Elements.saveSettingsBtn.addEventListener("click", () => __awaiter(this, void 0, void 0, function* () {
             this.saveSettings();
         }));
