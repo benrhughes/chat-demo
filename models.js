@@ -7,8 +7,6 @@ export class DB {
 export class GlobalModel {
     constructor() {
         this.apiKey = '';
-        this.contextWindow = 10;
-        this.temperature = 0.8;
     }
 }
 export class ChatModel {
@@ -16,6 +14,8 @@ export class ChatModel {
         this.messages = [];
         this.gptModel = "gpt-3.5-turbo";
         this.systemPrompt = "You are a helpful assistant";
+        this.contextWindow = 10;
+        this.temperature = 0.8;
         this.id = (new Date()).valueOf();
         this.name = "New chat";
     }

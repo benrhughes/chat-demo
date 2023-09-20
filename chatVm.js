@@ -29,8 +29,8 @@ export class ChatVm {
                 },
                 body: JSON.stringify({
                     model: this.model.gptModel,
-                    temperature: global.temperature,
-                    messages: [{ role: 'system', content: this.model.systemPrompt }, ...this.model.messages.slice(-global.contextWindow)]
+                    temperature: this.model.temperature,
+                    messages: [{ role: 'system', content: this.model.systemPrompt }, ...this.model.messages.slice(-this.model.contextWindow)]
                 })
             });
             if (response.ok) {
@@ -49,10 +49,13 @@ export class ChatVm {
         });
     }
     updateUiFromModel() {
+        var _a, _b;
         Elements.systemMessage.value = this.model.systemPrompt;
         Elements.gptModel.value = this.model.gptModel;
         Elements.chatName.value = this.model.name || 'New Chat';
         Elements.chatTitle.innerHTML = this.model.name;
+        Elements.contextWindow.value = ((_a = this.model.contextWindow) === null || _a === void 0 ? void 0 : _a.toString()) || "10";
+        Elements.temperature.value = ((_b = this.model.temperature) === null || _b === void 0 ? void 0 : _b.toString()) || "0.8";
         this.clearHistoryUi();
         this.model.messages.forEach(element => {
             this.addMessageToUi(element);
@@ -62,6 +65,8 @@ export class ChatVm {
         this.model.systemPrompt = Elements.systemMessage.value;
         this.model.gptModel = Elements.gptModel.value;
         this.model.name = Elements.chatName.value;
+        this.model.contextWindow = +Elements.contextWindow.value;
+        this.model.temperature = +Elements.temperature.value;
     }
     addMessageToUi(message) {
         const historyList = document.getElementById('historyList');
