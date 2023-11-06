@@ -8,7 +8,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 import { Elements } from './elements.js';
-import { ChatMessage } from './models.js';
+import { ChatMessage, GlobalModel } from './models.js';
 export class ChatVm {
     constructor(model) {
         this.model = model;
@@ -21,7 +21,7 @@ export class ChatVm {
             let message = new ChatMessage('user', Elements.prompt.value);
             this.updateHistory(message);
             const tmpMsg = this.addMessageToUi(new ChatMessage("assistant", "..."));
-            const response = yield fetch('https://api.openai.com/v1/chat/completions', {
+            const response = yield fetch(GlobalModel.apiUrl, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -30,21 +30,20 @@ export class ChatVm {
                 body: JSON.stringify({
                     model: this.model.gptModel,
                     temperature: this.model.temperature,
-                    messages: [{ role: 'system', content: this.model.systemPrompt }, ...this.model.messages.slice(-this.model.contextWindow)]
+                    messages: [new ChatMessage('system', this.model.systemPrompt), ...this.model.messages.slice(-this.model.contextWindow)]
                 })
             });
+            (_a = tmpMsg === null || tmpMsg === void 0 ? void 0 : tmpMsg.parentElement) === null || _a === void 0 ? void 0 : _a.removeChild(tmpMsg);
             if (response.ok) {
                 const data = yield response.json();
-                const assistantMessage = (_b = (_a = data.choices[0]) === null || _a === void 0 ? void 0 : _a.message.content) !== null && _b !== void 0 ? _b : 'No output';
-                (_c = tmpMsg === null || tmpMsg === void 0 ? void 0 : tmpMsg.parentElement) === null || _c === void 0 ? void 0 : _c.removeChild(tmpMsg);
+                const assistantMessage = (_c = (_b = data.choices[0]) === null || _b === void 0 ? void 0 : _b.message.content) !== null && _c !== void 0 ? _c : 'No output';
                 message = new ChatMessage('assistant', assistantMessage);
                 this.updateHistory(message);
             }
             else {
                 const text = `An error occurred calling the ChatGPT API.\n${response.status}: ${response.statusText}\n${response.body}`;
                 console.error(text);
-                message = new ChatMessage('assistant', text);
-                this.addMessageToUi(message);
+                alert(text);
             }
         });
     }
@@ -81,7 +80,6 @@ export class ChatVm {
         else {
             classes.push('surface-700');
         }
-        // historyItem.setAttribute('style', 'max-width: 90%;');
         historyItem.classList.add(...classes);
         const content = document.createElement('div');
         content.innerText = `${message.content}`;
@@ -103,12 +101,42 @@ export class ChatVm {
         }
     }
     clearMessages() {
-        confirm("Delete all messages for this chat?");
         this.model.messages = [];
         this.updateUiFromModel();
     }
     updateHistory(message) {
         this.model.messages.push(message);
         this.addMessageToUi(message);
+    }
+    summarizeHistory(global) {
+        var _a, _b, _c;
+        return __awaiter(this, void 0, void 0, function* () {
+            const json = JSON.stringify(this.model.messages);
+            const msg = new ChatMessage('user', `As concisely as possible, summarize this conversation between a user and chatgpt. It will be used as context for future chats.\r\n${json}`);
+            const tmpMsg = this.addMessageToUi(new ChatMessage("assistant", "..."));
+            const response = yield fetch(GlobalModel.apiUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${global.apiKey}`
+                },
+                body: JSON.stringify({
+                    model: this.model.gptModel,
+                    temperature: this.model.temperature,
+                    messages: [msg]
+                })
+            });
+            (_a = tmpMsg === null || tmpMsg === void 0 ? void 0 : tmpMsg.parentElement) === null || _a === void 0 ? void 0 : _a.removeChild(tmpMsg);
+            if (response.ok) {
+                const data = yield response.json();
+                const assistantMessage = (_c = (_b = data.choices[0]) === null || _b === void 0 ? void 0 : _b.message.content) !== null && _c !== void 0 ? _c : 'No output';
+                this.model.messages = [new ChatMessage('assistant', `Here is a summary of the conversation to date:\n ${assistantMessage}`)];
+            }
+            else {
+                const text = `An error occurred calling the ChatGPT API.\n${response.status}: ${response.statusText}\n${response.body}`;
+                console.error(text);
+                alert(text);
+            }
+        });
     }
 }

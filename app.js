@@ -129,7 +129,9 @@ export class App {
         return false;
     }
     deleteChat() {
-        confirm("Delete the current chat?");
+        if (!confirm("Delete the current chat?")) {
+            return;
+        }
         this.db.models = this.db.models.filter(x => { var _a; return x.id !== ((_a = this.currentChat) === null || _a === void 0 ? void 0 : _a.model.id); });
         this.currentChat = new ChatVm(this.db.models[0]);
         this.saveDb();
@@ -160,32 +162,64 @@ export class App {
         this.saveDb();
         alert("Settings saved");
     }
+    // clone and replace the element to remove any event handlers
+    unbind(element) {
+        var _a;
+        var clone = element.cloneNode(true);
+        (_a = element.parentNode) === null || _a === void 0 ? void 0 : _a.replaceChild(clone, element);
+    }
     bindUiEventHandlers() {
+        this.unbind(Elements.saveSettingsBtn);
         Elements.saveSettingsBtn.addEventListener("click", () => __awaiter(this, void 0, void 0, function* () {
             this.saveSettings();
         }));
+        this.unbind(Elements.exportBtn);
         Elements.exportBtn.addEventListener("click", () => __awaiter(this, void 0, void 0, function* () {
             this.export();
         }));
+        this.unbind(Elements.importBtn);
         Elements.importBtn.addEventListener("click", () => __awaiter(this, void 0, void 0, function* () {
             this.import();
         }));
+        this.unbind(Elements.clearPersistanceBtn);
         Elements.clearPersistanceBtn.addEventListener("click", () => __awaiter(this, void 0, void 0, function* () {
             this.clearDb();
         }));
-        Elements.deleteChatBtn.addEventListener("click", () => {
+        this.unbind(Elements.deleteChatBtn);
+        Elements.deleteChatBtn.addEventListener("click", e => {
             this.deleteChat();
         });
-        Elements.clearMessagesBtn.addEventListener("click", () => __awaiter(this, void 0, void 0, function* () {
+        this.unbind(Elements.clearMessagesBtn);
+        Elements.clearMessagesBtn.addEventListener("click", (e) => __awaiter(this, void 0, void 0, function* () {
             var _a;
+            if (!confirm("Delete all messages for this chat?")) {
+                return;
+            }
             (_a = this.currentChat) === null || _a === void 0 ? void 0 : _a.clearMessages();
         }));
+        this.unbind(Elements.summarizeMessagesBtn);
+        Elements.summarizeMessagesBtn.addEventListener("click", (e) => __awaiter(this, void 0, void 0, function* () {
+            var _b, _c;
+            if (!confirm('This will replace all of your chat history with a summary of the conversation. Are you sure?')) {
+                return;
+            }
+            if (!((_b = this.globals) === null || _b === void 0 ? void 0 : _b.model.apiKey)) {
+                alert('You need to enter an API Key');
+                return;
+            }
+            yield ((_c = this.currentChat) === null || _c === void 0 ? void 0 : _c.summarizeHistory(this.globals.model));
+            this.saveDb();
+            this.load();
+        }));
+        this.unbind(Elements.selectedChat);
         Elements.selectedChat.addEventListener("change", (e) => __awaiter(this, void 0, void 0, function* () {
             this.chatSelected(e);
         }));
+        this.unbind(Elements.settingsToggleBtn);
         Elements.settingsToggleBtn.addEventListener("click", (e) => __awaiter(this, void 0, void 0, function* () {
             return this.toggleSettings(e);
         }));
+        this.unbind(Elements.prompt);
         Elements.prompt.addEventListener("keydown", (event) => __awaiter(this, void 0, void 0, function* () {
             this.promptEnter(event);
         }));

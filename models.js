@@ -9,6 +9,7 @@ export class GlobalModel {
         this.apiKey = '';
     }
 }
+GlobalModel.apiUrl = 'https://api.openai.com/v1/chat/completions';
 export class ChatModel {
     constructor() {
         this.messages = [];
